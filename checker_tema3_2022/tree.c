@@ -30,6 +30,7 @@ FileTree createFileTree(char* rootFolderName) {
 
 void freeTree(FileTree fileTree) {
     // TODO
+	// i am here
     
 }
 
