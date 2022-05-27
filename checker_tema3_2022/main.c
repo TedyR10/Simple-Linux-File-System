@@ -16,6 +16,8 @@
 #define MV "mv"
 #define CP "cp"
 
+#define PRINT 1
+
 void execute_command(char *cmd, char *arg1, char *arg2) {
     printf("$ %s %s %s\n", cmd, arg1, arg2);
 }
@@ -30,7 +32,7 @@ TreeNode* process_command(TreeNode* currentFolder,
     } else if (!strcmp(cmd[0], TREE)) {
         tree(currentFolder, cmd[1]);
     } else if (!strcmp(cmd[0], CD)) {
-        currentFolder = cd(currentFolder, cmd[1]);
+        currentFolder = cd(currentFolder, cmd[1], PRINT);
     } else if (!strcmp(cmd[0], MKDIR)) {
         mkdir(currentFolder, strdup(cmd[1]));
     } else if (!strcmp(cmd[0], RMDIR)) {
@@ -57,11 +59,14 @@ int main() {
     char cmd[3][TOKEN_MAX_LEN];
     char *token;
 
-    FileTree fileTree = createFileTree(strdup("root"));
-    TreeNode* currentFolder = fileTree.root;
+    FileTree *fileTree = createFileTree(strdup("root"));
+    TreeNode* currentFolder = fileTree->root;
 
-    while (fgets(line, sizeof(line), stdin) != NULL) {
+    while (fgets(line, sizeof(line), stdin)) {
         line[strlen(line)-1] = 0;
+
+		if (line[0] == '\0')
+			break;
 
         cmd[0][0] = cmd[1][0] = cmd[2][0] = 0;
 

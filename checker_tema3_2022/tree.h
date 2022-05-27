@@ -45,7 +45,7 @@ struct List {
 
 void ls(TreeNode* currentNode, char* arg);
 void pwd(TreeNode* treeNode);
-TreeNode* cd(TreeNode* currentNode, char* path);
+TreeNode* cd(TreeNode* currentNode, char* path, int print);
 void tree(TreeNode* currentNode, char* arg);
 void mkdir(TreeNode* currentNode, char* folderName);
 void rm(TreeNode* currentNode, char* fileName);
@@ -54,5 +54,5 @@ void rmrec(TreeNode* currentNode, char* resourceName);
 void touch(TreeNode* currentNode, char* fileName, char* fileContent);
 void cp(TreeNode* currentNode, char* source, char* destination);
 void mv(TreeNode* currentNode, char* source, char* destination);
-FileTree createFileTree();
-void freeTree(FileTree fileTree);
+FileTree *createFileTree(char* rootFolderName);
+void freeTree(FileTree *fileTree);
