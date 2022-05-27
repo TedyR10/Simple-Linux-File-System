@@ -1,7 +1,0 @@
-mkdir A
-touch a
-mkdir B
-touch c
-touch d
-rm c
-ls
