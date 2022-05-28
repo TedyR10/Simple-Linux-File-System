@@ -1,8 +1,0 @@
-$ mkdir A 
-
-$ touch b 
-
-$ tree  
-b
-A
-1 directories, 1 files

@@ -1,7 +1,0 @@
-mkdir A
-mkdir B
-mkdir C
-cd B
-touch b
-cd ..
-rmdir B

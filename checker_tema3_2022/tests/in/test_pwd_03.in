@@ -1,5 +1,0 @@
-mkdir A
-cd A
-mkdir B
-cd B
-pwd

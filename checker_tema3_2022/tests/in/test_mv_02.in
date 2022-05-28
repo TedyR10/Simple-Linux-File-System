@@ -1,6 +1,0 @@
-mkdir A
-touch a
-mv a A
-mkdir B
-mv A B
-tree
