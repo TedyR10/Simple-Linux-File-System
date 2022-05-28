@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* useful macro for handling error codes */
+// Useful macro for handling error codes
 #define DIE(assertion, call_description)                                       \
     do {                                                                       \
         if (assertion) {                                                       \

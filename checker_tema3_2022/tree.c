@@ -14,7 +14,7 @@
 FileTree *createFileTree(char* rootFolderName) {
 	// Allocs memory for the structure
 	FileTree *tree = malloc(sizeof(FileTree));
-	// Defensive programming xd
+	// Defensive programming
 	DIE(NULL == tree, "Malloc failed for tree\n");
 	tree->root = malloc(sizeof(TreeNode));
 	DIE(NULL == tree->root, "Malloc failed for tree->root\n");
@@ -42,7 +42,7 @@ FileTree *createFileTree(char* rootFolderName) {
 	return tree;
 }
 
-// Lists every file in a given directory
+// Lists every file and directory in a given directory
 void ls(TreeNode* currentNode, char* arg) {
 	// Checks if the given node doesn't exist or is a file
 	if (!currentNode || currentNode->type == FILE_NODE)
@@ -80,7 +80,7 @@ void ls(TreeNode* currentNode, char* arg) {
 		return;
 	}
 
-	// If ls is user on a directory, prints the contents of the directory
+	// If ls is used on a directory, prints the contents of the directory
 	if (it->info->type == FOLDER_NODE) {
 		FolderContent itContent = *(FolderContent *)(it->info->content);
 		ListNode *curr = itContent.children->head;
@@ -222,7 +222,7 @@ void tree(TreeNode* currentNode, char* arg) {
 // Creates a new directory in the current directory
 void mkdir(TreeNode* currentNode, char* folderName) {
 	// Checks if the given node doesn't exist, is a file or we are not given
-	// A folder name
+	// a folder name
 	if (!currentNode || currentNode->type == FILE_NODE || !folderName)
 		return;
 
@@ -276,7 +276,7 @@ void mkdir(TreeNode* currentNode, char* folderName) {
 // Deletes everything from a given directory/file
 void rmrec(TreeNode* currentNode, char* resourceName) {
 	// Checks if the given node doesn't exist, is a file or the resourceName is
-	// Not given
+	// not given
 	if (!currentNode || currentNode->type == FILE_NODE || !resourceName)
 		return;
 
@@ -297,13 +297,13 @@ void rmrec(TreeNode* currentNode, char* resourceName) {
 		return;
 	}
 
-	// If the specified resource is a file, simply use rm function
+	// If the specified resource is a file, simply uses rm function
 	if (it->info->type == FILE_NODE) {
 		rm(currentNode, resourceName);
 
 		return;
 	} else {
-		// Else, remove everything inside of it using rm function
+		// Else, removes everything inside of it using rm and rmdir functions
 		FolderContent itContent = *(FolderContent *)(it->info->content);
 		ListNode *i = itContent.children->head, *next;
 
@@ -313,6 +313,7 @@ void rmrec(TreeNode* currentNode, char* resourceName) {
 			if (i->info->type == FILE_NODE) {
 				rm(it->info, i->info->name);
 			} else {
+				// If a directory is not empty, calls itself
 				if (((FolderContent *)i->info->content)->children->head)
 					rmrec(it->info, i->info->name);
 				else
@@ -321,7 +322,7 @@ void rmrec(TreeNode* currentNode, char* resourceName) {
 
 			i = next;
 		}
-		// Lastly, remove the current node we are in
+		// Lastly, removes the current node we are in
 		rmdir(currentNode, it->info->name);
 	}
 }
@@ -407,13 +408,13 @@ void rmdir(TreeNode* currentNode, char* folderName) {
 		return;
 	}
 
-	// Remove the node from the list
+	// Removes the node from the list
 	if (prev)
 		prev->next = it->next;
 	else
 		currContent.children->head = it->next;
 
-	// Free the removed node
+	// Frees the removed node
 	free(it->info->name);
 	free(((FolderContent *)it->info->content)->children);
 	free(it->info->content);
@@ -475,7 +476,7 @@ void touch(TreeNode* currentNode, char* fileName, char* fileContent) {
 // Copies a file from the current directory to another directory
 void cp(TreeNode* currentNode, char* source, char* destination) {
 	// We are going to use a copy of the destination, because we are going to
-	// Break it up into tokens
+	// break it up into tokens
 	char *destCopy = malloc(strlen(destination) + 1);
 	DIE(NULL == destCopy, "Malloc failed for destCopy\n");
 	memcpy(destCopy, destination, strlen(destination) + 1);
@@ -499,7 +500,7 @@ void cp(TreeNode* currentNode, char* source, char* destination) {
 			return;
 		} else if (dest->type == FILE_NODE) {
 			// If the destination is a file, we are going to free its contents
-			// And then realloc the required memory and copy the new contents
+			// and then realloc the required memory and copy the new contents
 			free(((FileContent *)dest->content)->text);
 			((FileContent *)dest->content)->text =
 				malloc(strlen(((FileContent *)src->content)->text) + 1);
@@ -512,21 +513,23 @@ void cp(TreeNode* currentNode, char* source, char* destination) {
 			return;
 		}
 	} else {
-		// We are going to search for the last directory in the path
+		// We are going to search for the last / in the path
 		char *lastSlash = strrchr(destination, '/');
 
 		// We are going to read the path from finish to start to find where the
-		// Destination is
+		// destination is (excluding the last /)
 		if (lastSlash) {
+			// What comes after the last / is considered the new file's name
 			char *newFileName = malloc(strlen(lastSlash + 1) + 1);
 			DIE(NULL == newFileName, "Malloc failed for newFileName\n");
 
 			memcpy(newFileName, lastSlash + 1, strlen(lastSlash + 1) + 1);
 
+			// What comes before the / is considered the path to the directory
+			// in which to create the new file
 			char *newDestination = malloc(strlen(destination)
 				- strlen(lastSlash) + 1);
 			DIE(NULL == newDestination, "Malloc failed for newDestination\n");
-
 
 			memcpy(newDestination, destination, strlen(destination)
 				- strlen(lastSlash) + 1);
@@ -535,8 +538,7 @@ void cp(TreeNode* currentNode, char* source, char* destination) {
 
 			dest = cd(currentNode, newDestination, NO_PRINT);
 
-			// If we are trying to copy something into the directory we are
-			// Already in, an error is displayed
+			// If the path was not valid, an error is displayed
 			if (dest == currentNode) {
 				printf("cp: failed to access '%s': Not a directory\n",
 					destination);
@@ -554,7 +556,7 @@ void cp(TreeNode* currentNode, char* source, char* destination) {
 // Moves a file from the current directory into another
 void mv(TreeNode* currentNode, char* source, char* destination) {
 	// We are going to use a copy of the destination, because we are going to
-	// Break it up into tokens
+	// break it up into tokens
 	char *destCopy = malloc(strlen(destination) + 1);
 	DIE(NULL == destCopy, "Malloc failed for destCopy\n");
 	memcpy(destCopy, destination, strlen(destination) + 1);
@@ -564,14 +566,16 @@ void mv(TreeNode* currentNode, char* source, char* destination) {
 
 	if (src->type == FOLDER_NODE && dest->type == FOLDER_NODE) {
 		// If the src is a directory, it creates a new one at the destination
-		// And deletes the one from the currentNode
+		// and deletes the one from the currentNode
 		mkdir(dest, strdup(src->name));
 		FolderContent currContent = *(FolderContent *)(dest->content);
 		ListNode *it = currContent.children->head;
 
+		// The directory's content, including all subdirectories are copied
 		((FolderContent *)it->info->content)->children->head =
 			((FolderContent *)src->content)->children->head;
 
+		// Removes the content from the original, so that rmdir can be used
 		((FolderContent *)src->content)->children->head = NULL;
 
 		rmdir(src->parent, src->name);
@@ -581,15 +585,16 @@ void mv(TreeNode* currentNode, char* source, char* destination) {
 	// Assumes that src is a file, not a directory
 	if (dest != currentNode) {
 		if (dest->type == FOLDER_NODE) {
-			// if dest is a directory, creates a new file and delete the old one
+			// If dest is a directory, creates a new file and deletes the
+			// original one
 			touch(dest, strdup(src->name),
 				strdup(((FileContent *)src->content)->text));
 
 			rm(src->parent, src->name);
 			return;
 		} else if (dest->type == FILE_NODE) {
-			// If dest is a file, replaces it contents and deletes the file from
-			// the currentNode
+			// If dest is a file, replaces its contents and deletes the file
+			// from the currentNode
 			free(((FileContent *)dest->content)->text);
 			((FileContent *)dest->content)->text =
 				malloc(strlen(((FileContent *)src->content)->text) + 1);
@@ -608,12 +613,14 @@ void mv(TreeNode* currentNode, char* source, char* destination) {
 		char *lastSlash = strrchr(destination, '/');
 
 		if (lastSlash) {
-			// We are going to read the path from finish to start to find where
-			// The destination is
+			// What comes after the last / is considered the new file's name
 			char *newFileName = malloc(strlen(lastSlash + 1) + 1);
 			DIE(NULL == newFileName, "Malloc failed for newFileName\n");
+
 			memcpy(newFileName, lastSlash + 1, strlen(lastSlash + 1) + 1);
 
+			// What comes before the / is considered the path to the directory
+			// in which to create the new file
 			char *newDestination = malloc(strlen(destination)
 				- strlen(lastSlash) + 1);
 			DIE(NULL == newDestination, "Malloc failed for newDestination\n");
@@ -625,8 +632,7 @@ void mv(TreeNode* currentNode, char* source, char* destination) {
 
 			dest = cd(currentNode, newDestination, NO_PRINT);
 
-			// If we are trying to copy something into the directory we are
-			// Already in, an error is displayed
+			// If the path was not valid, an error is displayed
 			if (dest == currentNode) {
 				printf("mv: failed to access '%s': Not a directory\n",
 					destination);
@@ -648,7 +654,7 @@ void freeTree(FileTree* fileTree) {
 	FolderContent currContent = *(FolderContent *)(fileTree->root->content);
 	ListNode *it = currContent.children->head, *next;
 
-	// Uses rmrec to free every single file and directory
+	// Uses rmrec to free every single file and directory (apart from root)
 	while (it) {
 		next = it->next;
 		rmrec(fileTree->root, it->info->name);

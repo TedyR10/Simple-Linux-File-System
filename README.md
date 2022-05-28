@@ -5,10 +5,14 @@ Mitran Andrei-Gabriel & Rolea Theodor-Ioan
 
 ### Description:
 
-* This project aims to create a simple linux file system that can be accessed through bash commands.
+* This project aims to create a simple linux file system that can be accessed
+  through bash commands.
   Brief description of the functions used:
-  - createFileTree: creates the root directory and allocs memory for the structure
-  - ls: lists every file in a given directory/displays the contents of a file. If ls is cast on a file, it displays its contents. Otherwise, if ls is cast on a directory, it lists every file inside of it.
+  - createFileTree: creates the root directory and allocs memory for the
+  structure
+  - ls: lists every file in a given directory/displays the contents of a file.
+  If ls is cast on a file, it displays its contents. Otherwise, if ls is cast
+  on a directory, it lists every file inside of it.
   - pwd: prints the path of the current directory we are in
   - cd: switches the directory we are currently in with another one given
   - tree: prints every file and directory starting from a given node
@@ -23,9 +27,11 @@ Mitran Andrei-Gabriel & Rolea Theodor-Ioan
 
 ### Other comments:
 
-* In-depth comments regarding every function are used in the source code :).
-  Code modularization could've been better, but we chose to stick to the given source code.
-  The fact that we can use cd on a file is useful when making other functions.
+* In-depth comments regarding every function are used in the source code.
+* Code modularization could've been better, but we chose to stick to the given
+  source code.
+* The fact that we can use cd on a file is useful when making other functions,
+  even if it should not necessarily be permitted.
 
 ### Resources:
 
