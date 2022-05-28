@@ -36,7 +36,7 @@ TreeNode* process_command(TreeNode* currentFolder,
     } else if (!strcmp(cmd[0], CD)) {
         currentFolder = cd(currentFolder, cmd[1], PRINT);
     } else if (!strcmp(cmd[0], MKDIR)) {
-        mkdir(currentFolder, strdup(cmd[1]));
+        mkdir(currentFolder, cmd[1]);
     } else if (!strcmp(cmd[0], RMDIR)) {
         rmdir(currentFolder, cmd[1]);
     } else if (!strcmp(cmd[0], RM)) {
@@ -44,7 +44,7 @@ TreeNode* process_command(TreeNode* currentFolder,
     } else if (!strcmp(cmd[0], RMREC)) {
         rmrec(currentFolder, cmd[1]);
     } else if (!strcmp(cmd[0], TOUCH)) {
-        touch(currentFolder, strdup(cmd[1]), strdup(cmd[2]));
+        touch(currentFolder, cmd[1], cmd[2]);
     } else if (!strcmp(cmd[0], MV)) {
         mv(currentFolder, cmd[1], cmd[2]);
     } else if (!strcmp(cmd[0], CP)) {
@@ -61,7 +61,7 @@ int main() {
     char cmd[3][TOKEN_MAX_LEN];
     char *token;
 
-    FileTree *fileTree = createFileTree(strdup("root"));
+    FileTree *fileTree = createFileTree("root");
     TreeNode* currentFolder = fileTree->root;
 
     while (fgets(line, sizeof(line), stdin)) {

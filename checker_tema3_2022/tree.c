@@ -38,7 +38,6 @@ FileTree *createFileTree(char* rootFolderName) {
 	content.children->head = NULL;
 	memcpy(tree->root->content, &content, sizeof(content));
 
-	free(rootFolderName);
 	return tree;
 }
 
@@ -269,8 +268,6 @@ void mkdir(TreeNode* currentNode, char* folderName) {
 	listNode->info = node;
 	listNode->next = ((FolderContent *)currentNode->content)->children->head;
 	((FolderContent *)currentNode->content)->children->head = listNode;
-
-	free(folderName);
 }
 
 // Deletes everything from a given directory/file
@@ -468,9 +465,6 @@ void touch(TreeNode* currentNode, char* fileName, char* fileContent) {
 	listNode->info = node;
 	listNode->next = ((FolderContent *)currentNode->content)->children->head;
 	((FolderContent *)currentNode->content)->children->head = listNode;
-
-	free(fileName);
-	free(fileContent);
 }
 
 // Copies a file from the current directory to another directory
@@ -494,8 +488,7 @@ void cp(TreeNode* currentNode, char* source, char* destination) {
 		// If the destination is a directory, we are going to create a new file
 		// And paste the contents from src into it
 		if (dest->type == FOLDER_NODE) {
-			touch(dest, strdup(src->name),
-				strdup(((FileContent *)src->content)->text));
+			touch(dest, src->name, ((FileContent *)src->content)->text);
 
 			return;
 		} else if (dest->type == FILE_NODE) {
@@ -544,8 +537,7 @@ void cp(TreeNode* currentNode, char* source, char* destination) {
 					destination);
 			} else {
 				// Else, the file is created at the destination
-				touch(dest, strdup(newFileName),
-					strdup(((FileContent *)src->content)->text));
+				touch(dest, newFileName, ((FileContent *)src->content)->text);
 			}
 			free(newDestination);
 			free(newFileName);
@@ -567,7 +559,7 @@ void mv(TreeNode* currentNode, char* source, char* destination) {
 	if (src->type == FOLDER_NODE && dest->type == FOLDER_NODE) {
 		// If the src is a directory, it creates a new one at the destination
 		// and deletes the one from the currentNode
-		mkdir(dest, strdup(src->name));
+		mkdir(dest, src->name);
 		FolderContent currContent = *(FolderContent *)(dest->content);
 		ListNode *it = currContent.children->head;
 
@@ -587,8 +579,7 @@ void mv(TreeNode* currentNode, char* source, char* destination) {
 		if (dest->type == FOLDER_NODE) {
 			// If dest is a directory, creates a new file and deletes the
 			// original one
-			touch(dest, strdup(src->name),
-				strdup(((FileContent *)src->content)->text));
+			touch(dest, src->name, ((FileContent *)src->content)->text);
 
 			rm(src->parent, src->name);
 			return;
@@ -638,8 +629,7 @@ void mv(TreeNode* currentNode, char* source, char* destination) {
 					destination);
 			} else {
 				// Else, the file is created at the destination
-				touch(dest, strdup(newFileName),
-					strdup(((FileContent *)src->content)->text));
+				touch(dest, newFileName, ((FileContent *)src->content)->text);
 			}
 			free(newDestination);
 			free(newFileName);
